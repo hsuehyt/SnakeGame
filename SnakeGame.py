@@ -44,25 +44,26 @@ def handle_keys():
     elif keys[pygame.K_RIGHT] and snake_direction != (-1, 0):
         snake_direction = (1, 0)
 
-def reset_game():
-    global snake, snake_direction, food, score
-    snake = [(GRID_WIDTH // 2, GRID_HEIGHT // 2)]  # Corrected line
-    snake_direction = (0, -1)
-    food = (random.randint(0, GRID_WIDTH - 1), random.randint(0, GRID_HEIGHT - 1))
-    score = 0
-    run_game()
-
-
 def move_snake():
     global snake, snake_direction, food, score
     head_x, head_y = snake[0]
     new_head = (head_x + snake_direction[0], head_y + snake_direction[1])
 
     if new_head in snake or new_head[0] < 0 or new_head[0] >= GRID_WIDTH or new_head[1] < 0 or new_head[1] >= GRID_HEIGHT:
-        draw_text('You Lost! Press Q to quit, C to play again', WHITE, (50, 50))
-        pygame.display.flip()
-        while True:
-            event = pygame.event.wait()
+        return False  # Return False to indicate game over
+    snake.insert(0, new_head)
+    if new_head == food:
+        score += 1
+        food = (random.randint(0, GRID_WIDTH - 1), random.randint(0, GRID_HEIGHT - 1))
+    else:
+        snake.pop()
+    return True
+
+def game_over():
+    draw_text('You Lost! Press Q to quit, C to play again', WHITE, (50, 50))
+    pygame.display.flip()
+    while True:
+        for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_q:
                     pygame.quit()
@@ -73,23 +74,26 @@ def move_snake():
                 pygame.quit()
                 sys.exit()
 
-    snake.insert(0, new_head)
-    if new_head == food:
-        score += 1
-        food = (random.randint(0, GRID_WIDTH - 1), random.randint(0, GRID_HEIGHT - 1))
-    else:
-        snake.pop()
+def reset_game():
+    global snake, snake_direction, food, score
+    snake = [(GRID_WIDTH // 2, GRID_HEIGHT // 2)]
+    snake_direction = (0, -1)
+    food = (random.randint(0, GRID_WIDTH - 1), random.randint(0, GRID_HEIGHT - 1))
+    score = 0
+    run_game()
 
 def run_game():
-    global score
-    while True:
+    running = True
+    while running:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-
         handle_keys()
-        move_snake()
+        running = move_snake()
+        if not running:
+            game_over()
+            return
 
         screen.fill(BLACK)
         for segment in snake:

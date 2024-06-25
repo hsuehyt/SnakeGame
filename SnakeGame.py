@@ -32,15 +32,20 @@ def draw_text(text, color, position):
     text_surface = font.render(text, True, color)
     screen.blit(text_surface, position)
 
+def center_text(text, color):
+    text_surface = font.render(text, True, color)
+    text_rect = text_surface.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2))
+    screen.blit(text_surface, text_rect)
+
 def start_screen():
-    start_message = "Press Arrow Key to Start"
-    draw_text(start_message, WHITE, (SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 - 20))
+    screen.fill(BLACK)
+    center_text("Press Arrow Key to Start", WHITE)
     pygame.display.flip()
     while True:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key in [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]:
-                    return  # Start the game when any arrow key is pressed
+                    return
                 elif event.key == pygame.K_q:
                     pygame.quit()
                     sys.exit()
@@ -78,7 +83,8 @@ def move_snake():
     return True
 
 def game_over():
-    draw_text('You Lost! Press Q to quit, C to play again', WHITE, (50, 50))
+    screen.fill(BLACK)
+    center_text('You Lost! Press Q to quit, C to play again', WHITE)
     pygame.display.flip()
     while True:
         for event in pygame.event.get():

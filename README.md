@@ -4,8 +4,8 @@ This repository contains two implementations of the classic Snake game: one in P
 
 ## Contents
 
-1. `snake_game.py` - Python implementation
-2. `snake_game.html` - HTML/JavaScript implementation
+1. `SnakeGame.py` - Python implementation
+2. `SnakeGame.html` - HTML/JavaScript implementation
 
 ## Python Version
 
@@ -27,7 +27,7 @@ This repository contains two implementations of the classic Snake game: one in P
 Execute the following command in your terminal:
 
 ```
-python snake_game.py
+python SnakeGame.py
 ```
 
 ### Features
@@ -45,7 +45,7 @@ python snake_game.py
 
 ### How to Run
 
-Simply open the `snake_game.html` file in your web browser.
+Simply open the `SnakeGame.html` file in your web browser.
 
 ### Features
 

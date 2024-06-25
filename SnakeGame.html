@@ -11,30 +11,41 @@
     </style>
 </head>
 <body>
-    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <canvas id="gameCanvas" width="600" height="400"></canvas>
     <script>
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
 
         const gridSize = 20;
-        const tileCount = 20;
-        let snake = [{ x: 10, y: 10 }];
-        let food = { x: 15, y: 15 };
+        const tileCountX = Math.floor(canvas.width / gridSize);
+        const tileCountY = Math.floor(canvas.height / gridSize);
+        let snake = [{ x: Math.floor(tileCountX / 2), y: Math.floor(tileCountY / 2) }];
+        let food = { x: 15, y: 10 };
         let dx = 0;
         let dy = 0;
         let score = 0;
+        let gameStarted = false;
+        let gameOver = false;
 
         function drawGame() {
             clearCanvas();
-            moveSnake();
-            drawSnake();
-            drawFood();
-            drawScore();
-            checkCollision();
+            if (!gameStarted) {
+                showStartMessage();
+            } else if (gameOver) {
+                showEndMessage();
+            } else {
+                if (dx !== 0 || dy !== 0) {
+                    moveSnake();
+                }
+                drawSnake();
+                drawFood();
+                drawScore();
+                checkCollision();
+            }
         }
 
         function clearCanvas() {
-            ctx.fillStyle = 'white';
+            ctx.fillStyle = 'black';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
         }
 
@@ -62,64 +73,92 @@
         }
 
         function generateFood() {
-            food.x = Math.floor(Math.random() * tileCount);
-            food.y = Math.floor(Math.random() * tileCount);
+            food.x = Math.floor(Math.random() * tileCountX);
+            food.y = Math.floor(Math.random() * tileCountY);
         }
 
         function drawScore() {
-            ctx.fillStyle = 'black';
-            ctx.font = '10px Arial';
-            ctx.fillText('Score: ' + score, 10, 20);
+            ctx.fillStyle = 'white';
+            ctx.font = '20px Arial';
+            ctx.fillText('Score: ' + score, 10, 30);
         }
 
         function checkCollision() {
-            if (snake[0].x < 0 || snake[0].x >= tileCount || snake[0].y < 0 || snake[0].y >= tileCount) {
-                gameOver();
+            if (snake[0].x < 0 || snake[0].x >= tileCountX || snake[0].y < 0 || snake[0].y >= tileCountY) {
+                gameOver = true;
             }
             for (let i = 1; i < snake.length; i++) {
                 if (snake[i].x === snake[0].x && snake[i].y === snake[0].y) {
-                    gameOver();
+                    gameOver = true;
                 }
             }
         }
 
-        function gameOver() {
-            alert('Game Over! Your score: ' + score);
-            snake = [{ x: 10, y: 10 }];
+        function showStartMessage() {
+            ctx.fillStyle = 'white';
+            ctx.font = '30px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Press Arrow Key to Start', canvas.width / 2, canvas.height / 2);
+        }
+
+        function showEndMessage() {
+            ctx.fillStyle = 'white';
+            ctx.font = '30px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('Game Over!', canvas.width / 2, canvas.height / 2 - 30);
+            ctx.fillText(`Your score: ${score}`, canvas.width / 2, canvas.height / 2 + 10);
+            ctx.font = '20px Arial';
+            ctx.fillText('Press Q to quit, C to play again', canvas.width / 2, canvas.height / 2 + 50);
+        }
+
+        function resetGame() {
+            snake = [{ x: Math.floor(tileCountX / 2), y: Math.floor(tileCountY / 2) }];
             dx = dy = 0;
             score = 0;
+            gameOver = false;
             generateFood();
         }
 
-        document.addEventListener('keydown', changeDirection);
+        document.addEventListener('keydown', handleKeyPress);
 
-        function changeDirection(event) {
-            const LEFT_KEY = 37;
-            const RIGHT_KEY = 39;
-            const UP_KEY = 38;
-            const DOWN_KEY = 40;
+        function handleKeyPress(event) {
+            if (!gameStarted) {
+                if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(event.key)) {
+                    gameStarted = true;
+                }
+                return;
+            }
 
-            const keyPressed = event.keyCode;
+            if (gameOver) {
+                if (event.key.toLowerCase() === 'q') {
+                    // Quit the game (reload the page)
+                    window.location.reload();
+                } else if (event.key.toLowerCase() === 'c') {
+                    // Continue (reset the game)
+                    resetGame();
+                    gameStarted = true;
+                }
+                return;
+            }
+
             const goingUp = dy === -1;
             const goingDown = dy === 1;
             const goingRight = dx === 1;
             const goingLeft = dx === -1;
 
-            if (keyPressed === LEFT_KEY && !goingRight) {
-                dx = -1;
-                dy = 0;
-            }
-            if (keyPressed === UP_KEY && !goingDown) {
-                dx = 0;
-                dy = -1;
-            }
-            if (keyPressed === RIGHT_KEY && !goingLeft) {
-                dx = 1;
-                dy = 0;
-            }
-            if (keyPressed === DOWN_KEY && !goingUp) {
-                dx = 0;
-                dy = 1;
+            switch (event.key) {
+                case 'ArrowLeft':
+                    if (!goingRight) { dx = -1; dy = 0; }
+                    break;
+                case 'ArrowUp':
+                    if (!goingDown) { dx = 0; dy = -1; }
+                    break;
+                case 'ArrowRight':
+                    if (!goingLeft) { dx = 1; dy = 0; }
+                    break;
+                case 'ArrowDown':
+                    if (!goingUp) { dx = 0; dy = 1; }
+                    break;
             }
         }
 
@@ -128,6 +167,7 @@
             setTimeout(gameLoop, 100);
         }
 
+        generateFood();
         gameLoop();
     </script>
 </body>

@@ -24,13 +24,29 @@ font = pygame.font.SysFont('arial', 24)
 
 # Snake and food data structures
 snake = [(GRID_WIDTH // 2, GRID_HEIGHT // 2)]
-snake_direction = (0, -1)
+snake_direction = (0, 0)  # Initial direction set to 0,0 until an arrow key is pressed
 food = (random.randint(0, GRID_WIDTH - 1), random.randint(0, GRID_HEIGHT - 1))
 score = 0
 
 def draw_text(text, color, position):
     text_surface = font.render(text, True, color)
     screen.blit(text_surface, position)
+
+def start_screen():
+    start_message = "Press Arrow Key to Start"
+    draw_text(start_message, WHITE, (SCREEN_WIDTH // 2 - 150, SCREEN_HEIGHT // 2 - 20))
+    pygame.display.flip()
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.KEYDOWN:
+                if event.key in [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]:
+                    return  # Start the game when any arrow key is pressed
+                elif event.key == pygame.K_q:
+                    pygame.quit()
+                    sys.exit()
+            elif event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
 
 def handle_keys():
     global snake_direction
@@ -46,6 +62,8 @@ def handle_keys():
 
 def move_snake():
     global snake, snake_direction, food, score
+    if snake_direction == (0, 0):
+        return True  # Keep the game state running but do not move the snake until direction is set
     head_x, head_y = snake[0]
     new_head = (head_x + snake_direction[0], head_y + snake_direction[1])
 
@@ -77,12 +95,13 @@ def game_over():
 def reset_game():
     global snake, snake_direction, food, score
     snake = [(GRID_WIDTH // 2, GRID_HEIGHT // 2)]
-    snake_direction = (0, -1)
+    snake_direction = (0, 0)  # Wait for arrow key press to start moving
     food = (random.randint(0, GRID_WIDTH - 1), random.randint(0, GRID_HEIGHT - 1))
     score = 0
     run_game()
 
 def run_game():
+    start_screen()  # Show the start screen before the game loop starts
     running = True
     while running:
         for event in pygame.event.get():
@@ -91,9 +110,6 @@ def run_game():
                 sys.exit()
         handle_keys()
         running = move_snake()
-        if not running:
-            game_over()
-            return
 
         screen.fill(BLACK)
         for segment in snake:
@@ -103,5 +119,9 @@ def run_game():
 
         pygame.display.flip()
         clock.tick(10)
+
+        if not running:
+            game_over()
+            return
 
 run_game()

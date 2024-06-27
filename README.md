@@ -43,9 +43,11 @@ python SnakeGame.py
 
 - A modern web browser (Chrome, Firefox, Safari, Edge)
 
-### How to Run
+### Play the Game
 
-Simply open the `SnakeGame.html` file in your web browser.
+You can play the game directly in your browser using the following URL:
+
+[Play SnakeGame](https://hsuehyt.github.io/SnakeGame/SnakeGame.html)
 
 ### Features
 

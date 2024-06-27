@@ -45,7 +45,7 @@ python SnakeGame.py
 
 ### Play the Game
 - Open the `SnakeGame.html` file in any web browser.
-- Play the animation directly in your browser using the following URL: [Play Whirlpool](https://hsuehyt.github.io/SnakeGame/SnakeGame.html)
+- Play the animation directly in your browser using the following URL: [Play SnakeGame](https://hsuehyt.github.io/SnakeGame/SnakeGame.html)
 
 ### Features
 

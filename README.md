@@ -44,10 +44,8 @@ python SnakeGame.py
 - A modern web browser (Chrome, Firefox, Safari, Edge)
 
 ### Play the Game
-
-You can play the game directly in your browser using the following URL:
-
-[Play SnakeGame](https://hsuehyt.github.io/SnakeGame/SnakeGame.html)
+- Open the `SnakeGame.html` file in any web browser.
+- Play the animation directly in your browser using the following URL: [Play Whirlpool](https://hsuehyt.github.io/SnakeGame/SnakeGame.html)
 
 ### Features
 
